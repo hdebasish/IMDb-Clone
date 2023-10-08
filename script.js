@@ -336,6 +336,7 @@ function handleClickListner(e) {
 
 window.onload = (event) => {
 
+    console.log("Document Loading");
 
     // Setting event listener to the entire document
 
@@ -350,11 +351,13 @@ window.onload = (event) => {
     let obj = JSON.parse(serializedObj);
 
     if(obj){
-        
+
         for (let i = 0; i < obj.length; i++) {
             favouriteList.push(obj[i]);
         }
     }
+
+    console.log("Document Loaded");
     
 
     
