@@ -27,7 +27,7 @@ movieSearchBar.addEventListener("keyup", (e) => {
 
 async function getMovies(searchString) {
     try {
-        const response = await fetch(`http://www.omdbapi.com/?s=${searchString.trim()}&apikey=b6bf5319`);
+        const response = await fetch(`https://www.omdbapi.com/?s=${searchString.trim()}&apikey=b6bf5319`);
         var data = await response.json();
         renderMovies(data.Search);
     } catch (error) {
@@ -39,7 +39,7 @@ async function getMovies(searchString) {
 async function getMovieDetails(movieID) {
 
     try {
-        const response = await fetch(`http://www.omdbapi.com/?i=${movieID.trim()}&apikey=b6bf5319`);
+        const response = await fetch(`https://www.omdbapi.com/?i=${movieID.trim()}&apikey=b6bf5319`);
         var data = await response.json();
         renderMovieDetails(data);
     } catch (error) {
