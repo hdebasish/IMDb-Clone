@@ -336,8 +336,6 @@ function handleClickListner(e) {
 
 window.onload = (event) => {
 
-    console.log("Document Loading");
-
     // Setting event listener to the entire document
 
     document.addEventListener('click', handleClickListner);
@@ -356,10 +354,6 @@ window.onload = (event) => {
             favouriteList.push(obj[i]);
         }
     }
-
-    console.log("Document Loaded");
-    
-
     
 };
 
