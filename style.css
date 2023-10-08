@@ -482,7 +482,11 @@ input[type=text]:focus {
     }
 
     .search-result ul{
-        height: 300px;
+        height: auto;
     }
     
+    footer{
+        display: none;
+    }
+
   }
