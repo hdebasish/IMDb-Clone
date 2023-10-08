@@ -480,4 +480,9 @@ input[type=text]:focus {
     .fav-title{
         font-size: 30px;
     }
+
+    .search-result ul{
+        height: auto;
+    }
+    
   }
