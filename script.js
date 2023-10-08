@@ -336,19 +336,28 @@ function handleClickListner(e) {
 
 window.onload = (event) => {
 
-    // Getting items from local storage
-
-    let serializedObj = localStorage.getItem('favouriteList');
-    let obj = JSON.parse(serializedObj);
-    for (let i = 0; i < obj.length; i++) {
-        favouriteList.push(obj[i]);
-    }
 
     // Setting event listener to the entire document
 
     document.addEventListener('click', handleClickListner);
     searchBar.value = "";
     homepageTitle.style.color="#e2b616";
+
+
+    // Getting items from local storage
+
+    let serializedObj = localStorage.getItem('favouriteList');
+    let obj = JSON.parse(serializedObj);
+
+    if(obj){
+        
+        for (let i = 0; i < obj.length; i++) {
+            favouriteList.push(obj[i]);
+        }
+    }
+    
+
+    
 };
 
 
