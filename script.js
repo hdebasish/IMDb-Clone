@@ -10,6 +10,9 @@ let list = document.getElementById("search-list");
 let favCard = document.getElementsByClassName("fav-card")[0];
 let favouriteList = [];
 let filmList;
+let film;
+
+// localStorage.clear()
 
 // Input keystroke event listener
 
@@ -17,10 +20,10 @@ movieSearchBar.addEventListener("keyup", (e) => {
     let searchString = searchBar.value;
     if (searchString == "") {
         list.innerHTML = "";
-    }else{
+    } else {
         getMovies(searchString);
     }
-    
+
 });
 
 // Searching the input by making API call
@@ -61,30 +64,29 @@ function renderMovies(movieList) {
             const obj = JSON.parse(serializedObj);
 
             if (serializedObj) {
-                console.log(obj)
                 let li = document.createElement('li');
                 li.classList.add("movie-list-item");
                 li.setAttribute('data-id', obj[0].imdbID);
                 li.innerHTML = `
                 <div>
                 <div class="list-image-holder">
-                    <img src="${ obj[0].Poster}" alt="">
+                    <img src="${obj[0].Poster}" alt="">
                 </div>
                 <div class="movie-info">
-                    <spam><b>${ obj[0].Title}</b></span>
+                    <spam><b>${obj[0].Title}</b></span>
                     <span>${obj[0].Year}</span>
                 </div>
                     </div>
                         <span class="like" data-id="${obj[0].imdbID}"><i class="fa-solid fa-heart" style="color: #e81828;"></i></span>`;
-                    list.appendChild(li);
-                
+                list.appendChild(li);
+
 
             } else {
 
                 let li = document.createElement('li');
-            li.classList.add("movie-list-item");
-            li.setAttribute('data-id',movieList[i].imdbID);
-            li.innerHTML = `
+                li.classList.add("movie-list-item");
+                li.setAttribute('data-id', movieList[i].imdbID);
+                li.innerHTML = `
             <div>
                 <div class="list-image-holder">
                     <img src="${movieList[i].Poster}" alt="">
@@ -95,17 +97,17 @@ function renderMovies(movieList) {
                 </div>
             </div>
             <span class="like" data-id="${movieList[i].imdbID}"><i class="fa-regular fa-heart fa-lg"></i></span>`;
-            list.appendChild(li);
+                list.appendChild(li);
 
             }
 
         }
 
-    }else{
+    } else {
         list.innerHTML = "";
         let li = document.createElement('li');
         li.classList.add("no-result");
-        li.innerHTML=`<h2>No Result found</h2>`;
+        li.innerHTML = `<h2>No Result found</h2>`;
         list.appendChild(li);
 
 
@@ -119,6 +121,12 @@ function renderMovies(movieList) {
 
 
 function renderMovieDetails(movie) {
+
+    film = movie;
+
+    const serializedObj = localStorage.getItem(movie.imdbID);
+    const obj = JSON.parse(serializedObj);
+
     hompage.classList.add("hide");
     movieDetails.innerHTML = `
     <div class="movie-details-wrapper">
@@ -148,6 +156,8 @@ function renderMovieDetails(movie) {
         <div class="movie-bio"><span><b>Writers</b></span><span class="color-blue">${movie.Writer}</span></div>
         <hr>
         <div class="movie-bio"><span><b>Stars</b></span><span class="color-blue">${movie.Actors}</span></div>
+        <hr>
+        <div class="movie-bio"><button class="button-1" id="markFavBtn" role="button" onClick="markAsFavourite('${movie.imdbID}')">${obj ? "Remove From Favorite" : "Mark As Favorite"}</button></div>
     </div>
 </div>
 </div>
@@ -166,6 +176,7 @@ function renderMovieDetails(movie) {
 
 }
 
+
 // Populating the favourite page
 
 function renderFavouritePage() {
@@ -178,13 +189,12 @@ function renderFavouritePage() {
     for (let i = 0; i < favouriteList.length; i++) {
         let div = document.createElement('div');
         div.classList.add("fav-card");
-        div.setAttribute("data-id",favouriteList[i][0].imdbID);
+        div.setAttribute("data-id", favouriteList[i][0].imdbID);
         div.innerHTML = `
                     <div class="fav-poster">
                         <img src="${favouriteList[i][0].Poster}" alt="">
-                        <div class="dislike" data-id="${favouriteList[i][0].imdbID}"><i class="fa-solid fa-thumbs-down fa-2xl" style="color: #ff0000;"></i></div>
                     </div>
-                <div class="card-text"><span class="color-lightgrey">${favouriteList[i][0].Year}</span></div>
+                <div class="card-text"><span class="color-lightgrey">${favouriteList[i][0].Year}</span><div class="dislike" data-id="${favouriteList[i][0].imdbID}"><i class="fa-solid fa-thumbs-down" style="color: #ff0000;"></i></div></div>
             <p class="card-text extra-padding">${favouriteList[i][0].Title}</p>
         `;
         favDiv.appendChild(div);
@@ -196,6 +206,58 @@ function renderFavouritePage() {
 }
 
 // Adding items to favourite list
+
+function markAsFavourite(id) {
+
+    const markFavBtn = document.getElementById("markFavBtn");
+
+    markFavBtn.innerText = ""; 
+
+    const serializedObj = localStorage.getItem(id);
+    const obj = JSON.parse(serializedObj);
+
+    if (obj) {
+
+        favouriteList = favouriteList.filter((film) => {
+            return film[0].imdbID != id;
+        });
+
+        localStorage.removeItem(id);
+
+        markFavBtn.innerText = "Mark As Favourite";
+
+        Toastify({
+            text: "Removed from favourites!",
+            duration: 2000,
+            className: "info",
+            position: "center",
+            style: {
+                background: "linear-gradient(to right, #FD2626, #FFED50)"
+            }
+        }).showToast();
+
+    }else{
+
+        const serializedNewFavMovie = JSON.stringify([film]);
+        localStorage.setItem(id, serializedNewFavMovie);
+
+        favouriteList.push([film]);
+
+        markFavBtn.innerText = "Remove From Favourite";
+
+        Toastify({
+            text: "Added to favourites!",
+            duration: 2000,
+            className: "info",
+            position: "center",
+            style: {
+                background: "linear-gradient(to right, #00b09b, #96c93d)"
+            }
+        }).showToast();
+
+    }
+
+}
 
 function addToFavourite(id) {
     let likesList = document.getElementsByClassName("like");
@@ -229,7 +291,7 @@ function addToFavourite(id) {
             style: {
                 background: "linear-gradient(to right, #FD2626, #FFED50)"
             }
-          }).showToast();
+        }).showToast();
 
     } else {
 
@@ -250,7 +312,7 @@ function addToFavourite(id) {
             style: {
                 background: "linear-gradient(to right, #00b09b, #96c93d)"
             }
-          }).showToast();
+        }).showToast();
     }
 
 }
@@ -259,7 +321,7 @@ function addToFavourite(id) {
 // Remove from favourite list
 
 
-function removeToFavourite(id){
+function removeToFavourite(id) {
     favouriteList = favouriteList.filter((film) => {
         return film[0].imdbID != id;
     });
@@ -273,7 +335,7 @@ function removeToFavourite(id){
         style: {
             background: "linear-gradient(to right, #FD2626, #FFED50)"
         }
-      }).showToast();
+    }).showToast();
 }
 
 // Tracking mouse clicks and handling functions 
@@ -282,52 +344,65 @@ function removeToFavourite(id){
 function handleClickListner(e) {
     const target = e.target;
     let dataId;
-    if(target.closest("[data-id]")){
+    if (target.closest("[data-id]")) {
         dataId = target.closest("[data-id]");
     }
-    
-    if (target.parentElement.className === 'like') {
+
+    if (target?.parentElement?.className === 'like') {
+
         const taskid = target.parentElement.dataset.id;
-        addToFavourite(taskid)
-    } else if (target.className === 'fav-page') {
-        homepageTitle.style.color="#FFFFFF";
-        favPage.style.color="#e2b616";
+        addToFavourite(taskid);
+
+    } else if (target?.className === 'fav-page') {
+
+        homepageTitle.style.color = "#FFFFFF";
+        favPage.style.color = "#e2b616";
         hompage.classList.add("hide");
-        searchBar.value="";
+        searchBar.value = "";
         list.innerHTML = "";
         movieDetails.classList.add("hide");
         favourite.classList.remove("hide");
         renderFavouritePage();
-    } else if(target.className === 'home-page'){
-        favPage.style.color="#FFFFFF";
-        homepageTitle.style.color="#e2b616";
+
+    } else if (target?.className === 'home-page') {
+
+        favPage.style.color = "#FFFFFF";
+        homepageTitle.style.color = "#e2b616";
         movieDetails.classList.add("hide");
         favourite.classList.add("hide");
         hompage.classList.remove("hide");
-        
-    }else if(dataId){
+        searchBar.value = "";
+        list.innerHTML = "";
 
-        if (dataId.className === 'fav-card') {
+    } else if (dataId) {
+
+        if (dataId?.className === 'fav-card') {
+
             const taskid = dataId.dataset.id;
             favourite.classList.add("hide");
-            favPage.style.color="#FFFFFF";
-            getMovieDetails(taskid);
-    
-        } else if (dataId.className === 'movie-list-item') {
-            const taskid = dataId.dataset.id;
-            homepageTitle.style.color="#FFFFFF";
+            favPage.style.color = "#FFFFFF";
             getMovieDetails(taskid);
 
-        } else if (dataId.className === 'dislike') {
+        } else if (dataId?.className === 'movie-list-item') {
+
+            const taskid = dataId.dataset.id;
+            homepageTitle.style.color = "#FFFFFF";
+            getMovieDetails(taskid);
+
+        } else if (dataId?.className === 'dislike') {
+
             const taskid = dataId.dataset.id;
             removeToFavourite(taskid);
             renderFavouritePage();
+
         }
 
-    }else if(target.tagName !== 'INPUT'){
+    } else {
+
         list.innerHTML = "";
+        searchBar.value = "";
     }
-    
+
 
 
 }
@@ -340,7 +415,7 @@ window.onload = (event) => {
 
     document.addEventListener('click', handleClickListner);
     searchBar.value = "";
-    homepageTitle.style.color="#e2b616";
+    homepageTitle.style.color = "#e2b616";
 
 
     // Getting items from local storage
@@ -348,13 +423,13 @@ window.onload = (event) => {
     let serializedObj = localStorage.getItem('favouriteList');
     let obj = JSON.parse(serializedObj);
 
-    if(obj){
+    if (obj) {
 
         for (let i = 0; i < obj.length; i++) {
             favouriteList.push(obj[i]);
         }
     }
-    
+
 };
 
 
