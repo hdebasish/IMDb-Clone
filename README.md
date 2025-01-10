@@ -9,7 +9,7 @@
 Explore a vast collection of movies, TV shows, and celebrities easily. The website leverages APIs to fetch real-time data, ensuring you can access the latest information about your favourite films and actors. From timeless classics to the hottest releases, IMDb Clone provides comprehensive details, including ratings, reviews, cast and crew information, plot summaries, trailers, and more.
 ## Demo
 
-[IMDb Clone App](https://6522b42b22666c0008db9a3c--celebrated-kheer-230f99.netlify.app/)
+[IMDb Clone App](https://imdb-production.netlify.app/)
 
 ## Authors
 
